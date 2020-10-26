@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
+    <link rel="stylesheet" href="assets/css/smoothproducts.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
+        <div class="container"><a class="navbar-brand logo" href="#">E-Note</a><button data-toggle="collapse"
+                class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span
+                    class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="features.html">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="pricing.html">Pricing</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about-us.html">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact-us.html">Contact Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">register</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="page landing-page">
+        <section class="clean-block clean-info dark">
+            <div class="container">
+                <div class="block-heading">
+                    <h2 class="text-info">Quiz</h2>
+
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="customFile">
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                        <button type="button" class="btn btn-warning" id="upload">Upload</button>
+                    </div>
+
+                    <div class="container mt-5">
+                        <div class="d-flex justify-content-center row">
+                            <div class="col-md-10 col-lg-10">
+                                <div class="border">
+                                    <div class="question bg-white p-3 border-bottom">
+                                        <div class="d-flex flex-row justify-content-between align-items-center mcq">
+                                            <h4>MCQ Quiz</h4><span id="cnt">(0 of n)</span>
+                                        </div>
+                                    </div>
+                                    <div class="question bg-white p-3 border-bottom">
+                                        <div class="d-flex flex-row align-items-center question-title">
+                                            <h3 class="text-danger">Q.</h3>
+                                            <h5 class="mt-1 ml-2" id="que">Question will appear here
+                                            </h5>
+                                        </div>
+                                        <div class="ans ml-2">
+                                            <label class="radio"> <input type="radio" name="option1" value="option1">
+                                                <span id="option1">option1</span>
+                                            </label>
+                                        </div>
+                                        <div class="ans ml-2">
+                                            <label class="radio"> <input type="radio" name="option2" value="option2">
+                                                <span id="option2"> option2 </span>
+                                            </label>
+                                        </div>
+                                        <div class="ans ml-2">
+                                            <label class="radio"> <input type="radio" name="option3" value=""> <span
+                                                    id="option3">option3</span>
+                                            </label>
+                                        </div>
+                                        <div class="ans ml-2">
+                                            <label class="radio"> <input type="radio" name="option4" value="option4">
+                                                <span id="option4">option4</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="d-flex flex-row justify-content-between align-items-center p-3 bg-white">
+                                        <button class="btn btn-primary d-flex align-items-center btn-danger" id="prev"
+                                            type="button"><i
+                                                class="fa fa-angle-left mt-1 mr-1"></i>&nbsp;previous</button><button
+                                            class="btn btn-primary border-success align-items-center btn-success"
+                                            type="button" id="nxt">Next<i class="fa fa-angle-right ml-2"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!--footer-->
+
+                <section class="clean-block about-us"></section>
+    </main>
+    <footer class="page-footer dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3">
+                    <h5>Get started</h5>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Register</a></li>
+                        <li><a href="#">Login</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <h5>About us</h5>
+                    <ul>
+                        <li><a href="#">About MonkInsider</a></li>
+                        <li><a href="#">Contact us</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <h5>Support</h5>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Help desk</a></li>
+                        <li><a href="#">Forums</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <h5>Legal</h5>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>© 2020 MonkInsider</p>
+        </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+    <script src="assets/js/smoothproducts.min.js"></script>
+    <script src="assets/js/theme.js"></script>
+
+    <script>
+        let GLOBAL_STORE_FILE;
+        let GLOBAL_INDEX = 0;
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+
+        //read file and parse json
+        document.getElementById('upload').onclick = function () {
+            var files = document.getElementById('customFile').files;
+
+            if (files.length <= 0) {
+                return false;
+            }
+
+            var fr = new FileReader();
+
+            fr.onload = function (e) {
+                // console.log(e);
+                populate(e);
+
+            }
+
+            fr.readAsText(files.item(0));
+
+        };
+
+
+
+        function populate(e) {
+
+            var result = JSON.parse(e.target.result);
+            GLOBAL_STORE_FILE = result;
+            let MAX_SIZE = result.questions.length;
+            doIt(GLOBAL_INDEX);
+            document.getElementById('cnt').innerHTML = MAX_SIZE;
+        }
+
+//prev btn click
+        $("#prev").click(function () {
+            console.log("inside prev", GLOBAL_INDEX);
+            if (GLOBAL_INDEX <= 0) 
+            {
+                
+            }
+            
+          
+            else {
+                GLOBAL_INDEX;
+
+                doIt(GLOBAL_INDEX--);
+            }
+
+
+        });
+//next btn click
+        $("#nxt").click(function () {
+
+            doIt(GLOBAL_INDEX++);
+              
+        });
+
+        function doIt(index) {
+
+
+            index = GLOBAL_INDEX;
+            if ( index < GLOBAL_STORE_FILE.questions.length ) {
+
+                let result = GLOBAL_STORE_FILE;
+
+                //setting options
+                let question = document.getElementById("que");
+                let option1 = document.getElementById("option1");
+                let option2 = document.getElementById("option2");
+                let option3 = document.getElementById("option3");
+                let option4 = document.getElementById("option4");
+                // let length = JSON.stringify(reformatted);
+
+                question.innerHTML = result.questions[index].question;
+                option1.innerHTML = result.questions[index].answers[0];
+                option2.innerHTML = result.questions[index].answers[1];
+                option3.innerHTML = result.questions[index].answers[2];
+                option4.innerHTML = result.questions[index].answers[3];
+              
+            } else {
+                console.log("break if")
+                GLOBAL_INDEX--;
+            }
+
+        }
+    </script>
+
+</body>
+
+</html>

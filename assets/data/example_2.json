@@ -1,0 +1,31 @@
+{
+    "module": {
+      "number": 1,
+      "name": "Quiz"
+     
+    },
+    "questions": [
+      {
+        "number": 1,
+        "question": "Who was first super saiyan?",
+        "answers": [
+          "goku",
+          "vegeta",
+          "gohan",
+          "tom"
+        ],
+        "correct_answer": "goku"
+      },
+      {
+        "number": 2,
+        "question": "Best games of 2020?",
+        "answers": [
+          "cricket",
+          "footaball",
+          "soccer",
+          "badminton"
+        ],
+        "correct_answer": "cricket"
+      }
+    ]
+  }
