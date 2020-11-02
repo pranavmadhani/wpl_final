@@ -12,7 +12,11 @@ module.exports.verify = function (req, res) {
 
 
   connection.query('SELECT * FROM users WHERE email = ?', [email], function (error, results, fields) {
-
+  // you can use request.session.variable name to set value and get value
+    //  req.session.email="xxx";
+    
+    // console.log(req.session.user);
+    
     if (error) {
       res.json({
         status: false,
@@ -24,10 +28,12 @@ module.exports.verify = function (req, res) {
         //decryptedString = cryptr.decrypt(results[0].password);
 
         if (results[0].password == req.body.password) {
-          res.json({
-            status: true,
-            message: 'successfully authenticated'
-          })
+          req.session.user =req.body.email;
+          res.redirect("http://localhost:8081/");
+          // res.json({
+          //   status: true,
+          //   message: 'successfully authenticated'
+          // })
         } else {
           res.json({
             status: false,

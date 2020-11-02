@@ -22,15 +22,20 @@ module.exports.register=function(req,res){
       if (error) {
         res.json({
             status:false,
-            message:'there are some error with query'+ error
+            message:'there are some error with query'+ error,
+           
         })
       }else{
-          res.json({
-            status:true,
-            data:results,
-            message:'user registered sucessfully'
+        
+        res.redirect("http://localhost:8081/registration-success");
+        // res.json({
+
+        //     status:true,
+        //     data:results,
+        //     message:'user registered sucessfully',
+           
             
-        })
+        // })
       }
     });
 }
