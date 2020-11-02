@@ -1,5 +1,5 @@
-//var Cryptr = require('cryptr');
-//cryptr = new Cryptr('myTotalySecretKey');
+var Cryptr = require('cryptr');
+var cryptr = new Cryptr('myTotalySecretKey');
 
 var connection = require('./../config');
 
@@ -25,9 +25,9 @@ module.exports.verify = function (req, res) {
     } else {
 
       if (results.length > 0) {
-        //decryptedString = cryptr.decrypt(results[0].password);
+        decryptedString = cryptr.decrypt(results[0].password);
 
-        if (results[0].password == req.body.password) {
+        if (password == decryptedString) {
           req.session.user =req.body.email;
           res.redirect("http://localhost:8081/");
           // res.json({
