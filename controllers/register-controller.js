@@ -15,6 +15,7 @@ module.exports.register=function(req,res){
         "email":req.body.email,
         "password":encryptedString,
         "created_at":today,
+        "role":"user"
         
     }
     if(req.body.length <1) return "error";

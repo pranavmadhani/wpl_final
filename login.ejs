@@ -4,12 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Login - Brand</title>
+    <title>Login</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
     <link rel="stylesheet" href="assets/css/smoothproducts.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -21,7 +22,7 @@
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="Features">Features</a></li>
                     <li class="nav-item"><a class="nav-link" href="Pricing">Pricing</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="shopping-cart">shopping cart</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="shopping-cart">shopping cart <i class="fa fa-shopping-cart" ></i></a></li>
                     <li class="nav-item"><a class="nav-link" href="quiz" >quiz</a></li>
                     <li class="nav-item"><a class="nav-link" href="login" id="login"><%=login%></a></li>
                     <li class="nav-item"><a class="nav-link" href="registration">register</a></li>
@@ -36,7 +37,7 @@
                 <div class="block-heading">
                     <h2 class="text-info">Log In</h2>
                 </div>
-                <form action="/controllers/authenticate-controller" method="POST">
+                <form action="/controllers/authenticate-controller" method="POST" name="login_form">
                     <div class="form-group"><label for="email">Email</label><input class="form-control item" type="email" id="email" name="email"></div>
                     <div class="form-group"><label for="password">Password</label><input class="form-control" type="password" id="password" name="password"></div>
                     <div class="form-group">
@@ -90,6 +91,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
     <script src="assets/js/smoothproducts.min.js"></script>
     <script src="assets/js/theme.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.1/jquery.validate.min.js"></script>
+    <script src="assets/js/validate.js"></script>
 </body>
 
 </html>
