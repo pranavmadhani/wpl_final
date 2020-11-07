@@ -98,7 +98,7 @@ module.exports.retrieveProduct = function(req,res,next){
         } else {
           res.json({
             status: false,
-            message: "Email does not exits"
+            message: "cannot add product"
           });
         }
       }

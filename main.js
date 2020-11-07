@@ -235,10 +235,11 @@ app.get('/registration-success', checkLoginStatus, function (req, res) {
 })
 
 
-app.get('/shopping-cart', checkLoginStatus, function (req, res) {
+app.get('/shopping-cart', checkUserStatus, function (req, res) {
     res.render(__dirname + "/" + "shopping-cart", {
         username: RESPONSE_OUTPUT,
         login: STATUS
+        
     });
 
 })
