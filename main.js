@@ -1,6 +1,7 @@
 //declaration of requried files
 var express = require("express");
 var bodyParser = require('body-parser');
+var connection = require('./config');
 var path = require('path');
 var app = express();
 var authenticateController = require('./controllers/authenticate-controller');
@@ -80,6 +81,8 @@ function checkUserStatus(req, res, next) {
 
 function checkLoginStatus(req, res, next) {
 
+    let selected_plan = req.session.selectedPlan
+    console.log(selected_plan + " selected plan");
 
 
 
@@ -107,6 +110,13 @@ function checkLoginStatus(req, res, next) {
 
 }
 
+function cartHelper(req, res) {
+    if (req.session.user == undefined) res.send("error: email is undefined")
+    else {
+        res.redirect("http://localhost:8081/cart-sample")
+    }
+
+}
 
 // middleware function to check for logged-in users
 
@@ -199,8 +209,8 @@ app.get('/Pricing', addProduct.retrieveProduct, function (req, res) {
         duration2: req.session.duration2,
 
         questions0: req.session.questions0,
-        questions1:req.session.questions1,
-        questions2:req.session.questions2,
+        questions1: req.session.questions1,
+        questions2: req.session.questions2,
 
 
         price0: req.session.price0,
@@ -236,21 +246,76 @@ app.get('/registration-success', checkLoginStatus, function (req, res) {
 
 
 app.get('/shopping-cart', checkUserStatus, function (req, res) {
-    res.render(__dirname + "/" + "shopping-cart", {
-        username: RESPONSE_OUTPUT,
-        login: STATUS
-        
+
+    connection.query('select plan, count from cart where email =?', [req.session.user], function (err, resultsOfplan, fields) {
+
+        if (err) res.send({
+            message: "error occured in shopping cart fetching data"
+        })
+
+        let plans = [];
+        let counts = [];
+
+        for (let i = 0; i < resultsOfplan.length; i++) {
+            counts.push(resultsOfplan[i].count)
+            plans.push(resultsOfplan[i].plan)
+
+        }
+        req.session.selectedPlan = plans;
+        req.session.count = counts;
+
+
+        connection.query('select description, price from products where 1', function (err, results, fields) {
+
+
+            let prices = [];
+            let description = [];
+
+            for (let i = 0; i < results.length; i++) {
+                prices.push(results[i].price)
+                description.push(results[i].description)
+
+            }
+            req.session.prices = prices
+            req.session.description = description;
+           
+           
+            
+
+
+            res.render(__dirname + "/" + "shopping-cart", {
+                username: RESPONSE_OUTPUT,
+                login: STATUS,
+                selectedPlan: req.session.selectedPlan,
+                description: req.session.description,
+                qty: req.session.count,
+                price: req.session.prices,
+                loop: resultsOfplan.length
+
+            });
+
+
+        });
+
+
+
+
     });
+
+
 
 })
 
 
-app.get('/sample', checkUserStatus, function (req, res) {
-    res.render(__dirname + "/" + "sample", {
-        username: RESPONSE_OUTPUT,
-        login: STATUS
-    });
+app.get('/sample', checkLoginStatus, function (req, res) {
+    res.render(__dirname + "/" + "sample")
 })
+
+
+app.get('/cart-sample', checkLoginStatus, function (req, res) {
+    res.render(__dirname + "/" + "cart-sample")
+})
+
 /* route to handle login and registration */
 
 
@@ -258,7 +323,7 @@ app.post('/controllers/register-controller', registerController.register);
 app.post('/controllers/authenticate-controller', authenticateController.verify);
 app.post('/controllers/product-controller', addProduct.addProduct);
 app.post('/controllers/password-controller', modifyPassword.changePassword);
-app.post('/controllers/cart-controller',addCart.addProductToCart)
+app.post('/controllers/cart-controller', addCart.addProductToCart, cartHelper);
 //set app directory to make sure static files are being read
 
 app.use(express.static(__dirname + '/public/assets'), function (req, res, next) {
