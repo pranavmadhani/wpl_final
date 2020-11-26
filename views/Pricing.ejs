@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+    <%- include('partials/header') -%>
+    <main class="page pricing-table-page">
+        <section class="clean-block clean-pricing dark">
+            <div class="container">
+                <div class="block-heading">
+                    <h2 class="text-info">Pricing Table</h2>
+                    <p>Choose the best plan that suits you.</p>
+                </div>
+
+
+                <form action="/controllers/cart-controller" method="post">
+
+                    <div class="row justify-content-center">
+                        <div class="col-md-5 col-lg-4 prod_list_1">
+                            <div class="clean-pricing-item">
+                                <div class="heading">
+                                    <h3 id="planA" name="planA">
+                                        <%= plan0 %>
+                                    </h3>
+
+
+                                </div>
+                                <p><%= description0 %></p>
+                                <div class="features">
+                                    <input type="hidden" id="plnA" name="pln" value='<%= plan0 %>'>
+                                    <h4><span class="feature">Full Support:&nbsp;</span><span><%= fullsupport0 %></span>
+                                    </h4>
+                                    <h4><span class="feature">Duration:&nbsp;</span><span><%= duration0%> Days</span>
+                                    </h4>
+                                    <h4><span class="feature">Questions:&nbsp;</span><span><%=questions0 %></span></h4>
+                                </div>
+                                <div class="price">
+                                    <h4>$<%= price0 %></h4>
+                                </div><button class="btn btn-outline-primary btn-block" id="btn0" type="submit">BUY
+                                    NOW</button>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-5 col-lg-4 prod_list_2">
+
+                            <div class="clean-pricing-item">
+                                <div class="ribbon"><span>Best Value</span></div>
+                                <div class="heading">
+                                    <h3 id="planB" name="planB"> <%= plan1 %></h3>
+                                </div>
+                                <p><%= description1 %></p>
+                                <div class="features">
+
+                                    <h4><span class="feature">Full Support:&nbsp;</span><span><%= fullsupport1 %></span>
+                                    </h4>
+                                    <h4><span class="feature">Duration:&nbsp;</span><span><%= duration1%> Days</span>
+                                    </h4>
+                                    <h4><span class="feature">Questions:&nbsp;</span><span><%=questions1 %></span></h4>
+                                </div>
+                                <div class="price">
+                                    <h4>$<%= price1 %></h4>
+                                </div><button class="btn btn-primary btn-block" id="btn1" type="submit">BUY NOW</button>
+                            </div>
+                        </div>
+
+
+                        
+
+                        <!--hidden field set value using jquery-->
+                        <input type="hidden" id="pln" name="pln" value=''>
+
+                        <script>
+                            $(function () {
+                                console.log("ready!");
+
+                                $("#btn0").click(function () {
+
+                                    document.getElementById('pln').value = '<%= plan0 %>';
+                                });
+
+                                $("#btn1").click(function () {
+
+                                    document.getElementById('pln').value = '<%= plan1 %>';
+                                });
+
+                                $("#btn2").click(function () {
+
+                                    document.getElementById('pln').value = '<%= plan2 %>';
+                                });
+
+                            });
+                        </script>
+
+
+
+
+
+                        <div class="col-md-5 col-lg-4 prod_list_3">
+                            <div class="clean-pricing-item">
+                                <div class="heading">
+                                    <h3 id="planC" name="planC"> <%= plan2 %></h3>
+                                </div>
+                                <p><%= description2 %></p>
+                                <div class="features">
+                                    <h4><span class="feature">Full Support:&nbsp;</span><span><%= fullsupport2 %></span>
+                                    </h4>
+                                    <h4><span class="feature">Duration:&nbsp;</span><span><%= duration2%> Days</span>
+                                    </h4>
+                                    <h4><span class="feature">Questions:&nbsp;</span><span><%=questions2 %></span></h4>
+                                </div>
+                                <div class="price">
+                                    <h4>$<%= price2 %></h4>
+                                </div><button class="btn btn-outline-primary btn-block" id="btn2" type="submit">BUY
+                                    NOW</button>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            </form>
+        </section>
+    </main>
+    <%- include('partials/footer') -%>
+</body>
+
+</html>
