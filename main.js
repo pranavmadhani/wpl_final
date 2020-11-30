@@ -1,9 +1,12 @@
 //declaration of requried files
+
 var express = require("express");
 var bodyParser = require('body-parser');
 var connection = require('./config');
 var path = require('path');
 var app = express();
+var methodOveride = require('method-override');
+var router = express.Router();
 var authenticateController = require('./controllers/authenticate-controller');
 var registerController = require('./controllers/register-controller');
 var addProduct = require('./controllers/product-controller')
@@ -17,6 +20,8 @@ var cryptr = new Cryptr('myTotalySecretKey');
 var dbFetcher = require('./controllers/dbFetch')
 const helper = require('./controllers/helpers')
 var fs = require('fs');
+var ObjectId = require('mongodb').ObjectId;
+const mongoose = require('mongoose');
 const multer = require('multer')
 const {
     Http2ServerRequest
@@ -24,6 +29,7 @@ const {
 app.set('view engine', 'ejs');
 var RESPONSE_OUTPUT;
 var STATUS = "LOGIN";
+var db = require("monk")("localhost:27017/quiz");
 
 
 
@@ -33,6 +39,10 @@ const {
     validationResult,
     check
 } = require('express-validator');
+const {
+    send
+} = require("process");
+
 app.set('trust proxy', 1)
 // app initialization starts here
 app.use(session({
@@ -48,22 +58,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+app.use(methodOveride('_method'));
 /* the helper function will check the user status and set value of global variables acordingly
 if the variables are set which is user is present it will login else if already logged-in user will be
 logged out
 */
 
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/assets/data/');
-    },
 
-    // By default, multer removes file extensions so let's add them back
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + path.extname(file.originalname));
-    }
-});
 
 
 function checkUserStatus(req, res, next) {
@@ -75,8 +77,8 @@ function checkUserStatus(req, res, next) {
             username: RESPONSE_OUTPUT,
             login: STATUS
         });
-       
-        
+
+
     } else {
         console.log(req.session.user, ":logged in");
         next();
@@ -92,8 +94,8 @@ function checkLoginStatus(req, res, next) {
         console.log(req.path)
         next();
         // console.log(req.session.user, "if");
-        
-        
+
+
     } else {
         RESPONSE_OUTPUT = req.session.user.split('@')[0];
         STATUS = "LOGOUT";
@@ -109,8 +111,7 @@ function cartHelper(req, res) {
     }
 }
 
-function navigateToQuiz(req, res)
-{
+function navigateToQuiz(req, res) {
     res.redirect("http://localhost:8081/quiz_home")
     next();
 }
@@ -144,56 +145,126 @@ app.get('/login', checkLoginStatus, function (req, res) {
     });
 })
 app.get('/quiz', checkUserStatus, function (req, res) {
+
+    var collection = db.get("quizes");
+    console.log(req.query.user_selected_quiz)
+   
+ 
+
+
+collection.findOne({_id: req.query.user_selected_quiz},"quiz_data").then((doc)=>{
+
+ 
+    let jsonData = JSON.stringify(doc.quiz_data);
+    jsonData = JSON.parse(jsonData);
+   // console.log(jsonData);
+
     res.render(__dirname + "/views/" + "quiz", {
-        username: RESPONSE_OUTPUT,
-        login: STATUS
-    });
+                username: RESPONSE_OUTPUT,
+                login: STATUS,
+                quiz_data:jsonData
+                
+            });
+
+})
+
+
+
+
+    
+//})
 })
 
 app.get('/quiz_home', checkUserStatus, function (req, res) {
 
+//By default all search results will be displayed
+    if (
+        (!req.query.search && !req.query.genre) ||
+        (req.query.search == "" && req.query.genre == "all")
+    ) {
+        var collection = db.get("quizes");
+        collection.find({}, function (err, quiz_data) {
+            if (err) throw err;
 
-    let display_file = [];
-    let query = 'select * from quiz where 1';
-    
-    if (req.query.search == undefined || req.query.filter_category == "All" ) {
-        
-        query = 'select * from quiz where 1';
-    }
-   else if(req.query.search.length>1)
-   {
-    query = 'select * from quiz  name like ?';
-   }
-    
-    else {
-
-        query = 'select * from quiz where name like ? and category =? ';
-    }
-
-
-    connection.query(query, [req.query.search+"%", req.query.filter_category], function (error, results, fields) {
-        if (error) {
-            res.json({
-                status: false,
-                message: 'there are some error with query' + error,
-
-            })
-        }
-
-        for (let i = 0; i < results.length; i++) {
-            display_file.push(results[i].name)
-        }
-
-        res.render(__dirname + "/views/" + "quiz_home", {
-            username: RESPONSE_OUTPUT,
-            login: STATUS,
-            file: display_file
-
+            res.render("quiz_home", {
+                username: RESPONSE_OUTPUT,
+                quiz: quiz_data,
+                login: STATUS
+            });
         });
-    });
+    }
+
+    else if (req.query.search != "" && req.query.genre == "all") {
+       
+       console.log("else 1");
+        var collection = db.get("quizes");
+        var filter = new RegExp([req.query.search].join(""), "i");
+        collection.find({
+          title: filter
+        }, function (err, quiz_data) {
+          if (err) throw err;
+          res.render("quiz_home", {
+            username: RESPONSE_OUTPUT,
+            quiz: quiz_data,
+            login: STATUS
+        });
+        });
+      }
+
+      else if (req.query.search != "" && req.query.genre != "all") {
+        console.log("else 2");
+        var collection = db.get("quizes");
+        var filter = new RegExp([req.query.search].join(""), "i");
+        var genre = new RegExp([req.query.genre].join(""), "i");
+        collection.find({
+          title: filter,
+          genre: genre
+        }, function (err, quiz_data) {
+            if (err) throw err;
+            res.render("quiz_home", {
+              username: RESPONSE_OUTPUT,
+              quiz: quiz_data,
+              login: STATUS
+          });
+          });
+      } else if (req.query.search == "" && req.query.genre != "all") {
+        console.log("else 3");
+        var collection = db.get("quizes");
+        var genre = new RegExp([req.query.genre].join(""), "i");
+        console.log(req.query.genre)
+        collection.find({
+          genre: req.query.genre
+        }, function (err, quiz_data) {
+            if (err) throw err;
+            res.render("quiz_home", {
+              username: RESPONSE_OUTPUT,
+              quiz: quiz_data,
+              login: STATUS
+          });
+          });
+      }
+
+   
+
+
 });
 
 
+
+
+app.get('/quizes/:id', function(req, res) {
+	var collection = db.get('quizes');
+	collection.findOne({ _id: req.params.id }, function(err, quiz_data){
+        if (err) throw err;
+        
+       
+        res.render("displaySelectedQuiz", {
+            quiz: quiz_data,
+            username: RESPONSE_OUTPUT,
+            login: STATUS
+          });
+	});
+});
 
 app.get('/registration', checkLoginStatus, function (req, res) {
     res.render(__dirname + "/views/" + "registration", {
@@ -260,7 +331,13 @@ app.get('/payment-page', checkLoginStatus, function (req, res) {
     });
 });
 
-
+app.get('/add_quiz', checkUserStatus, function (req, res) {
+    res.render(__dirname + "/views/" + "add_quiz", {
+        username: RESPONSE_OUTPUT,
+        email: req.session.user,
+        login: STATUS
+    });
+})
 
 app.get('/shopping-cart', checkUserStatus, dbFetcher.DBHelper, function (req, res) {
 
@@ -283,7 +360,7 @@ app.get('/cart-sample', checkLoginStatus, function (req, res) {
 })
 
 app.get('/contact-us', function (req, res) {
-    res.render(__dirname + "/views/" + "contact-Us",{
+    res.render(__dirname + "/views/" + "contact-Us", {
         username: RESPONSE_OUTPUT,
         login: STATUS,
     })
@@ -298,55 +375,88 @@ app.post('/controllers/password-controller', modifyPassword.changePassword);
 app.post('/controllers/cart-controller', addCart.addProductToCart, cartHelper);
 app.post('/controllers/dbFetch', dbFetcher.postUpdatedCartValueOnCkecout);
 
-var upload = multer({
-    storage: storage
-})
 
 app.post('/upload-quiz-json', (req, res) => {
 
-    let upload = multer({
-        storage: storage
-    }).single('quiz_json');
+    var collection = db.get("quizes");
+    collection.insert({
+        title: req.body.title,
+        genre: req.body.category,
+        image: req.body.image,
+        quiz_data: JSON.parse(req.body.quiz),
+    }, function (err, video) {
+        if (err) throw err;
 
-    upload(req, res, function (err) {
-
-
-        if (req.fileValidationError) {
-            return res.send(req.fileValidationError);
-        } else if (!req.file) {
-            return res.send("file is not valid json" + err);
-        } else if (err instanceof multer.MulterError) {
-            return res.send(err);
-        } else if (err) {
-            return res.send(err);
-        }
-
-        var quiz_data = {
-            name: req.file.originalname,
-            category: req.body.category
-
-        }
-        connection.query('INSERT INTO quiz SET ?', quiz_data, function (error, results, fields) {
-            if (error) {
-                res.json({
-                    status: false,
-                    message: 'there are some error with query' + error,
-
-                })
-            }
-            // Display uploaded image for user validation
-            res.send(`You have uploaded this quiz file:${req.file.originalname}`);
-
-        });
-
-
+        res.send('success');
+        // res.redirect("/videos");
     });
+
+
+
+
 });
 
+/****Route for delete */
 
+app.delete("/quizes/:id", function (req, res) {
+    var collection = db.get("quizes");
+    console.log(req.params.id + "xx");
+    console.log("inside function")
+    collection.remove({
+        
+      _id: req.params.id
+    }, function (err, quiz_data) {
+      if (err){ 
+          
+        console.log(err)
+        throw err;
+    }
+    
+  
+      res.redirect("/");
+    });
+  });
 
+/***Route for edit */
 
+app.get("/quizes/:id/edit", function (req, res) {
+    var collection = db.get("quizes");
+    collection.findOne({
+      _id: req.params.id
+    }, function (err, data) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      //console.log(data);
+      res.render("editQuiz", {
+        res: data,
+        username: RESPONSE_OUTPUT,
+        login: STATUS,
+      });
+    });
+  });
 
+  app.post("/quizes/:id/edit_save", function (req, res) {
+    console.log(req.body);
+    var collection = db.get("quizes");
+    collection
+      .findOneAndUpdate({
+        _id: req.params.id
+      }, {
+        $set: {
+          title: req.body.title,
+          genre: req.body.genre,
+          image: req.body.image,
+         
+        },
+      })
+      .then((updatedDoc) => {
+        console.log("Quiz details updated");
+        res.redirect("/");
+      });
+  });
+  
 
 
 

@@ -1,0 +1,22 @@
+<%- include ('partials/header') %>
+
+<div class="container">
+  <h1>Quiz Details</h1>
+
+  <p><img src="/public/assets/img/<%= quiz.image %>" alt="quiz_img" style="width: 200px; height: 200px;" /></p>
+  <p>Title: <%= quiz.title %></p>
+  <p>Genre: <%= quiz.genre %></p>
+ 
+
+  <form action="/quizes/<%= quiz._id %>/edit" method="GET">
+    <button type="submit" class="btn btn-warning">Edit Quiz</button>
+  </form>
+
+  <form action="/quizes/<%= quiz._id %>?_method=DELETE" method="POST">
+    <button type="submit" class="btn btn-danger">Delete Quiz</button>
+  </form>
+  <p>
+    <a href="/quiz_home">Back to List</a>
+  </p>
+</div>
+<%- include ('partials/footer') %>

@@ -1,121 +1,56 @@
-<!DOCTYPE html>
-<html>
-    <%- include('partials/header') -%>
-    <main class="page landing-page">
-        <section class="clean-block clean-info dark">
-            <div class="container">
-                <div class="block-heading">
-                    <h2 class="text-info">Quiz</h2>
-                </div>
-            </div>
-            <form class="example" action="?" method="get">
+<%- include ('partials/header') %>
+
+<h1>
+
+    Select Quiz
+</h1>
+
+<style>
+    h1 {
+        padding-top: 8%;
+    }
+</style>
+
+
+<form action="" class="form-group" method="get">
+    <input name="search" type="text" placeholder="Enter Title.." />
+    <label for="quiz">Choose a genre:</label>
+
+    <select name="genre" class="form-group" id="quiz" onchange="">
+        <option value="all">All</option>
+        <option value="GK">GK</option>
+        <option value="Movies">Movies</option>
+        <option value="Science">Science</option>
+        <option value="Sports">Sports</option>
+    </select>
+
+   
+
+    <button type="submit" class="btn btn-dark">Search</button>
+</form>
+</div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <% quiz.forEach(function(quiz_data){ %>
+            <form action='/quiz'>
+        <div class="sm-col-3">
+            <img src="public/assets/img/<%= quiz_data.image %>" style="width: 200px; height: 200px;" class="img-thumbnail" />
+            <div class="caption">
+                <a href="quizes/<%= quiz_data._id  %>"><%= quiz_data.title %></a>
                 <div>
-                    <input type="text" placeholder="Search for quiz name...e.g. sports" name="search">
-                    <button type="submit"><i class="fa fa-search"></i></button>
+                  
+                    <button type="submit" class="btn btn-dark">Take Quiz</button>
+                    <input type="hidden" name="user_selected_quiz" value ="<%= quiz_data._id  %>">
+                    
                 </div>
-                <label for="category">Category</label>
-                <select name="filter_category" id="filter_category" required>
-                    <option value="All">All</option>
-                    <option value="GK">GK</option>
-                    <option value="Movies">Movies</option>
-                    <option value="Science">Science</option>
-                    <option value="Sports">Sports</option>
-                </select>
-            </form action="quiz">
-            <div class="row">
-                </form>
-
                 
-                <% for (var i = 0; i < file.length; i++){ %>
-                    <form action="http://localhost:8081/quiz">
-                <div class="col-sm-3">
-                    <div class="container col-sm-3">
-                        <h2>Quiz</h2>
-                        <p><%=file[i]%></p>
-                        <div class="card" style="width:200px">
-                            <img class="card-img-top" src="img/quiz.jpg" alt="Card image" style="width:200px">
-                            <div class="card-body">
-                                <p class="card-text"></p>
-                                <button type="submit" name = "select_quiz_btn" text= "submit" value='<%=file[i]%>'  class="btn btn-primary quiz_btn">Take Quiz</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-                <% }; %>
-            
-<script>
-   
-    $( document ).ready(function() {
-       
-
-        $(".quiz_btn").on("click",(function() {
-
-         
-            var fileName = $(this).val();
-            localStorage.setItem("quiz_file",fileName);
-            
-            
-        })
-        )
-       
-
-    });
-    
-   
-    
-
-</script>
-
             </div>
-            <!--footer-->
-            <section class="clean-block about-us"></section>
-    </main>
-    <%- include('partials/footer') -%>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="assets/js/smoothproducts.min.js"></script>
-    <script src="assets/js/theme.js"></script>
-    <style>
-        body {
-            font-family: Arial;
-        }
-        * {
-            box-sizing: border-box;
-            padding-bottom: 10px;
-        }
-        form.example input[type=text] {
-            padding: 10px;
-            font-size: 17px;
-            border: 1px solid grey;
-            float: left;
-            width: 80%;
-            background: #f1f1f1;
-            padding-bottom: 10px;
-        }
-        form.example button {
-            float: left;
-            width: 20%;
-            padding: 10px;
-            background: #2196F3;
-            color: white;
-            font-size: 17px;
-            border: 1px solid grey;
-            border-left: none;
-            cursor: pointer;
-            padding-bottom: 10px;
-        }
-        form.example button:hover {
-            background: #0b7dda;
-            padding-bottom: 10px;
-        }
-        form.example::after {
-            content: "";
-            clear: both;
-            display: table;
-            padding-bottom: 10px;
-        }
-    </style>
-</body>
-</html>
+        </div>
+</form>
+        <% }); %>
+    </form>
+    </div>
+</div>

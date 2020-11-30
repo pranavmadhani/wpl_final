@@ -1,0 +1,35 @@
+<%- include ('partials/header') %>
+<div class="container">
+  <h1>Edit Quiz</h1>
+
+  <style>
+    h1 {
+      margin-top: 10%;
+      padding-top: 10%;
+
+    }
+  </style>
+
+
+<script>
+  
+</script>
+   
+  <form action="/quizes/<%=res._id %>/edit_save" method="POST">
+    <div class="form-group">
+      <input type="text" name="title" class="form-control" placeholder="title" value='<%=res.title %>'  />
+    </div>
+    <div class="form-group">
+      <input type="text" name="genre" class="form-control" placeholder="genre" value="<%=res.genre %>" />
+    </div>
+    <div class="form-group">
+      <input type="text" name="image" class="form-control" placeholder="image name" value="<%=res.image%>" />
+    </div>
+
+    <button type="submit" class="btn btn-info">Save</button>
+  </form>
+
+  <a href="/">Cancel</a>
+</div>
+
+<%- include ('partials/footer') %>
