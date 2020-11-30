@@ -30,6 +30,8 @@ module.exports.verify = function (req, res) {
         if (password == decryptedString) {
           req.session.user =req.body.email;
           req.session.password = decryptedString;
+          req.session.userType = results[0].role;
+          console.log(results[0].role);
           res.redirect("http://localhost:8081/sample");
           // res.json({
           //   status: true,

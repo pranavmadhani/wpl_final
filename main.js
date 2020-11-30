@@ -1,5 +1,4 @@
 //declaration of requried files
-
 var express = require("express");
 var bodyParser = require('body-parser');
 var connection = require('./config');
@@ -30,9 +29,6 @@ app.set('view engine', 'ejs');
 var RESPONSE_OUTPUT;
 var STATUS = "LOGIN";
 var db = require("monk")("localhost:27017/quiz");
-
-
-
 //******HELPERS */
 const {
     body,
@@ -42,7 +38,6 @@ const {
 const {
     send
 } = require("process");
-
 app.set('trust proxy', 1)
 // app initialization starts here
 app.use(session({
@@ -59,15 +54,11 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(methodOveride('_method'));
+app.enable('trust proxy');
 /* the helper function will check the user status and set value of global variables acordingly
 if the variables are set which is user is present it will login else if already logged-in user will be
 logged out
 */
-
-
-
-
-
 function checkUserStatus(req, res, next) {
     console.log("inside check status");
     if (req.session.user == '' || req.session.user == undefined) {
@@ -77,14 +68,11 @@ function checkUserStatus(req, res, next) {
             username: RESPONSE_OUTPUT,
             login: STATUS
         });
-
-
     } else {
         console.log(req.session.user, ":logged in");
         next();
     }
 }
-
 function checkLoginStatus(req, res, next) {
     let selected_plan = req.session.selectedPlan
     console.log(selected_plan + " selected plan");
@@ -94,8 +82,6 @@ function checkLoginStatus(req, res, next) {
         console.log(req.path)
         next();
         // console.log(req.session.user, "if");
-
-
     } else {
         RESPONSE_OUTPUT = req.session.user.split('@')[0];
         STATUS = "LOGOUT";
@@ -103,21 +89,16 @@ function checkLoginStatus(req, res, next) {
         next();
     }
 }
-
 function cartHelper(req, res) {
     if (req.session.user == undefined) res.send("error: email is undefined")
     else {
         res.redirect("http://localhost:8081/cart-sample")
     }
 }
-
 function navigateToQuiz(req, res) {
     res.redirect("http://localhost:8081/quiz_home")
     next();
 }
-
-
-
 // middleware function to check for logged-in users
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
@@ -134,7 +115,7 @@ app.get('/', checkLoginStatus, function (req, res) {
     });
 })
 app.get('/login', checkLoginStatus, function (req, res) {
-    console.log("status is:" + STATUS)
+    console.log("status is:" + STATUS);
     if (STATUS == 'LOGOUT') {
         req.session.user = "";
         STATUS = "LOGIN"
@@ -145,39 +126,28 @@ app.get('/login', checkLoginStatus, function (req, res) {
     });
 })
 app.get('/quiz', checkUserStatus, function (req, res) {
-
+    
+   
     var collection = db.get("quizes");
     console.log(req.query.user_selected_quiz)
-   
- 
-
-
-collection.findOne({_id: req.query.user_selected_quiz},"quiz_data").then((doc)=>{
-
- 
-    let jsonData = JSON.stringify(doc.quiz_data);
-    jsonData = JSON.parse(jsonData);
-   // console.log(jsonData);
-
-    res.render(__dirname + "/views/" + "quiz", {
-                username: RESPONSE_OUTPUT,
-                login: STATUS,
-                quiz_data:jsonData
-                
-            });
-
-})
-
-
-
-
+    collection.findOne({
+        _id: req.query.user_selected_quiz
+    }, "quiz_data").then((doc) => {
+        let jsonData = JSON.stringify(doc.quiz_data);
+        jsonData = JSON.parse(jsonData);
+        
+        res.render(__dirname + "/views/" + "quiz", {
+            username: RESPONSE_OUTPUT,
+            login: STATUS,
+            quiz_data: jsonData
+        });
     
-//})
+    })
+
+    //})
 })
-
 app.get('/quiz_home', checkUserStatus, function (req, res) {
-
-//By default all search results will be displayed
+    //By default all search results will be displayed
     if (
         (!req.query.search && !req.query.genre) ||
         (req.query.search == "" && req.query.genre == "all")
@@ -185,7 +155,52 @@ app.get('/quiz_home', checkUserStatus, function (req, res) {
         var collection = db.get("quizes");
         collection.find({}, function (err, quiz_data) {
             if (err) throw err;
-
+            res.render("quiz_home", {
+                username: RESPONSE_OUTPUT,
+                quiz: quiz_data,
+                login: STATUS
+                //status: req.session.userType
+            });
+        });
+    } else if (req.query.search != "" && req.query.genre == "all") {
+        console.log("else 1");
+        var collection = db.get("quizes");
+        var filter = new RegExp([req.query.search].join(""), "i");
+        collection.find({
+            title: filter
+        }, function (err, quiz_data) {
+            if (err) throw err;
+            res.render("quiz_home", {
+                username: RESPONSE_OUTPUT,
+                quiz: quiz_data,
+                login: STATUS
+            });
+        });
+    } else if (req.query.search != "" && req.query.genre != "all") {
+        console.log("else 2");
+        var collection = db.get("quizes");
+        var filter = new RegExp([req.query.search].join(""), "i");
+        var genre = new RegExp([req.query.genre].join(""), "i");
+        collection.find({
+            title: filter,
+            genre: genre
+        }, function (err, quiz_data) {
+            if (err) throw err;
+            res.render("quiz_home", {
+                username: RESPONSE_OUTPUT,
+                quiz: quiz_data,
+                login: STATUS
+            });
+        });
+    } else if (req.query.search == "" && req.query.genre != "all") {
+        console.log("else 3");
+        var collection = db.get("quizes");
+        var genre = new RegExp([req.query.genre].join(""), "i");
+        console.log(req.query.genre)
+        collection.find({
+            genre: req.query.genre
+        }, function (err, quiz_data) {
+            if (err) throw err;
             res.render("quiz_home", {
                 username: RESPONSE_OUTPUT,
                 quiz: quiz_data,
@@ -193,79 +208,29 @@ app.get('/quiz_home', checkUserStatus, function (req, res) {
             });
         });
     }
-
-    else if (req.query.search != "" && req.query.genre == "all") {
-       
-       console.log("else 1");
-        var collection = db.get("quizes");
-        var filter = new RegExp([req.query.search].join(""), "i");
-        collection.find({
-          title: filter
-        }, function (err, quiz_data) {
-          if (err) throw err;
-          res.render("quiz_home", {
-            username: RESPONSE_OUTPUT,
-            quiz: quiz_data,
-            login: STATUS
-        });
-        });
-      }
-
-      else if (req.query.search != "" && req.query.genre != "all") {
-        console.log("else 2");
-        var collection = db.get("quizes");
-        var filter = new RegExp([req.query.search].join(""), "i");
-        var genre = new RegExp([req.query.genre].join(""), "i");
-        collection.find({
-          title: filter,
-          genre: genre
-        }, function (err, quiz_data) {
-            if (err) throw err;
-            res.render("quiz_home", {
-              username: RESPONSE_OUTPUT,
-              quiz: quiz_data,
-              login: STATUS
-          });
-          });
-      } else if (req.query.search == "" && req.query.genre != "all") {
-        console.log("else 3");
-        var collection = db.get("quizes");
-        var genre = new RegExp([req.query.genre].join(""), "i");
-        console.log(req.query.genre)
-        collection.find({
-          genre: req.query.genre
-        }, function (err, quiz_data) {
-            if (err) throw err;
-            res.render("quiz_home", {
-              username: RESPONSE_OUTPUT,
-              quiz: quiz_data,
-              login: STATUS
-          });
-          });
-      }
-
-   
-
-
 });
+app.get('/quizes/:id', function (req, res) {
+
+    var userStatus = req.session.userType;
+    console.log(userStatus);
+        if(userStatus !='admin')
+        {
+            res.status(401).send('You are not authorized to access this page');
+        }
 
 
-
-
-app.get('/quizes/:id', function(req, res) {
-	var collection = db.get('quizes');
-	collection.findOne({ _id: req.params.id }, function(err, quiz_data){
+    var collection = db.get('quizes');
+    collection.findOne({
+        _id: req.params.id
+    }, function (err, quiz_data) {
         if (err) throw err;
-        
-       
         res.render("displaySelectedQuiz", {
             quiz: quiz_data,
             username: RESPONSE_OUTPUT,
             login: STATUS
-          });
-	});
+        });
+    });
 });
-
 app.get('/registration', checkLoginStatus, function (req, res) {
     res.render(__dirname + "/views/" + "registration", {
         username: RESPONSE_OUTPUT,
@@ -304,10 +269,12 @@ app.get('/Pricing', addProduct.retrieveProduct, function (req, res) {
     });
 })
 app.get('/profile', checkUserStatus, function (req, res) {
+  
     res.render(__dirname + "/views/" + "profile", {
         username: RESPONSE_OUTPUT,
         email: req.session.user,
-        login: STATUS
+        login: STATUS,
+        status: req.session.userType
     });
 })
 app.get('/registration-success', checkLoginStatus, function (req, res) {
@@ -317,10 +284,7 @@ app.get('/registration-success', checkLoginStatus, function (req, res) {
     });
 })
 app.get('/payment-page', checkLoginStatus, function (req, res) {
-
-
     res.render(__dirname + "/views/" + "payment-page", {
-
         username: RESPONSE_OUTPUT,
         login: STATUS,
         selectedPlan: req.session.selectedPlan,
@@ -330,7 +294,6 @@ app.get('/payment-page', checkLoginStatus, function (req, res) {
         loop: req.session.count
     });
 });
-
 app.get('/add_quiz', checkUserStatus, function (req, res) {
     res.render(__dirname + "/views/" + "add_quiz", {
         username: RESPONSE_OUTPUT,
@@ -338,9 +301,7 @@ app.get('/add_quiz', checkUserStatus, function (req, res) {
         login: STATUS
     });
 })
-
 app.get('/shopping-cart', checkUserStatus, dbFetcher.DBHelper, function (req, res) {
-
     res.render(__dirname + "/views/" + "shopping-cart", {
         username: RESPONSE_OUTPUT,
         login: STATUS,
@@ -351,21 +312,18 @@ app.get('/shopping-cart', checkUserStatus, dbFetcher.DBHelper, function (req, re
         loop: req.session.count
     });
 });
-
 app.get('/sample', checkLoginStatus, function (req, res) {
     res.render(__dirname + "/views/" + "sample")
 })
 app.get('/cart-sample', checkLoginStatus, function (req, res) {
     res.render(__dirname + "/views/" + "cart-sample")
 })
-
 app.get('/contact-us', function (req, res) {
     res.render(__dirname + "/views/" + "contact-Us", {
         username: RESPONSE_OUTPUT,
         login: STATUS,
     })
 })
-
 /* route to handle login and registration */
 app.post('/controllers/register-controller', registerController.register);
 app.post('/controllers/authenticate-controller', authenticateController.verify);
@@ -374,10 +332,7 @@ app.post('/controllers/product-delete-controller', deleteProduct.deleteProduct);
 app.post('/controllers/password-controller', modifyPassword.changePassword);
 app.post('/controllers/cart-controller', addCart.addProductToCart, cartHelper);
 app.post('/controllers/dbFetch', dbFetcher.postUpdatedCartValueOnCkecout);
-
-
 app.post('/upload-quiz-json', (req, res) => {
-
     var collection = db.get("quizes");
     collection.insert({
         title: req.body.title,
@@ -386,80 +341,61 @@ app.post('/upload-quiz-json', (req, res) => {
         quiz_data: JSON.parse(req.body.quiz),
     }, function (err, video) {
         if (err) throw err;
-
         res.send('success');
         // res.redirect("/videos");
     });
-
-
-
-
 });
-
 /****Route for delete */
-
 app.delete("/quizes/:id", function (req, res) {
     var collection = db.get("quizes");
-    console.log(req.params.id + "xx");
-    console.log("inside function")
-    collection.remove({
-        
-      _id: req.params.id
-    }, function (err, quiz_data) {
-      if (err){ 
-          
-        console.log(err)
-        throw err;
-    }
     
-  
-      res.redirect("/");
+    collection.remove({
+        _id: req.params.id
+    }, function (err, quiz_data) {
+        if (err) {
+            console.log(err)
+            throw err;
+        }
+        res.redirect("http://localhost:8081/sample");
     });
-  });
-
+});
 /***Route for edit */
-
 app.get("/quizes/:id/edit", function (req, res) {
     var collection = db.get("quizes");
+   
     collection.findOne({
-      _id: req.params.id
+        _id: req.params.id
     }, function (err, data) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      //console.log(data);
-      res.render("editQuiz", {
-        res: data,
-        username: RESPONSE_OUTPUT,
-        login: STATUS,
-      });
+        if (err) {
+            console.log(err);
+            return;
+        }
+        //console.log(data);
+        res.render("editQuiz", {
+            res: data,
+            username: RESPONSE_OUTPUT,
+            login: STATUS,
+        });
     });
-  });
-
-  app.post("/quizes/:id/edit_save", function (req, res) {
+});
+app.post("/quizes/:id/edit_save", function (req, res) {
     console.log(req.body);
     var collection = db.get("quizes");
     collection
-      .findOneAndUpdate({
-        _id: req.params.id
-      }, {
-        $set: {
-          title: req.body.title,
-          genre: req.body.genre,
-          image: req.body.image,
-         
-        },
-      })
-      .then((updatedDoc) => {
-        console.log("Quiz details updated");
-        res.redirect("/");
-      });
-  });
-  
-
-
-
+        .findOneAndUpdate({
+            _id: req.params.id
+        }, {
+            $set: {
+                title: req.body.title,
+                genre: req.body.genre,
+                image: req.body.image,
+            },
+        })
+        .then((updatedDoc) => {
+            console.log("Quiz details updated");
+            res.redirect("http://localhost:8081/sample");
+        });
+});
 //set app directory to make sure static files are being read
 app.use(express.static(__dirname + '/public/assets'), function (req, res, next) {
     next();
