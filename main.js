@@ -29,6 +29,7 @@ app.set('view engine', 'ejs');
 var RESPONSE_OUTPUT;
 var STATUS = "LOGIN";
 var db = require("monk")("localhost:27017/quiz");
+let path_loc = "";
 //******HELPERS */
 const {
     body,
@@ -61,31 +62,37 @@ logged out
 */
 function checkUserStatus(req, res, next) {
     console.log("inside check status");
+   req.session.path=req.path;
+     path_loc = req.session.path;
+
     if (req.session.user == '' || req.session.user == undefined) {
         console.log(req.session.user, "user not logged in");
-        console.log(req.path)
+        
         res.render(__dirname + "/views/" + "login", {
             username: RESPONSE_OUTPUT,
             login: STATUS
         });
+        //next();
     } else {
         console.log(req.session.user, ":logged in");
-        next();
+       return next();
     }
 }
 function checkLoginStatus(req, res, next) {
     let selected_plan = req.session.selectedPlan
+    
     console.log(selected_plan + " selected plan");
     if (req.session.user == '' || req.session.user == undefined) {
         RESPONSE_OUTPUT = "USER";
         STATUS = "LOGIN"
-        console.log(req.path)
+        
         next();
         // console.log(req.session.user, "if");
     } else {
         RESPONSE_OUTPUT = req.session.user.split('@')[0];
         STATUS = "LOGOUT";
         console.log("user is present so i will redirect to the next function call", req.session.user)
+        
         next();
     }
 }
@@ -95,10 +102,7 @@ function cartHelper(req, res) {
         res.redirect("http://localhost:8081/cart-sample")
     }
 }
-function navigateToQuiz(req, res) {
-    res.redirect("http://localhost:8081/quiz_home")
-    next();
-}
+
 // middleware function to check for logged-in users
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
@@ -106,14 +110,23 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+
+
+
 // app initialization ends here
 //app get & post endpoints
-app.get('/', checkLoginStatus, function (req, res) {
+
+
+
+
+app.get('/', function (req, res) {
     res.render(__dirname + "/views/" + "Index", {
         username: RESPONSE_OUTPUT,
-        login: STATUS
+        login: STATUS,
+        
     });
 })
+
 app.get('/login', checkLoginStatus, function (req, res) {
     console.log("status is:" + STATUS);
     if (STATUS == 'LOGOUT') {
@@ -125,7 +138,7 @@ app.get('/login', checkLoginStatus, function (req, res) {
         login: STATUS
     });
 })
-app.get('/quiz', checkUserStatus, function (req, res) {
+app.get('/quiz', function (req, res) {
     var collection = db.get("quizes");
     console.log(req.query.user_selected_quiz)
     collection.findOne({
@@ -331,10 +344,14 @@ app.get('/sample', checkLoginStatus, function (req, res) {
     res.render(__dirname + "/views/" + "sample", {
         username: RESPONSE_OUTPUT,
         login: STATUS,
+        url: path_loc
     })
 })
 app.get('/cart-sample', checkLoginStatus, function (req, res) {
-    res.render(__dirname + "/views/" + "cart-sample")
+    res.render(__dirname + "/views/" + "cart-sample",{
+        username: RESPONSE_OUTPUT,
+        login: STATUS,
+    })
 })
 app.get('/contact-us', function (req, res) {
     res.render(__dirname + "/views/" + "contact-Us", {
@@ -430,9 +447,7 @@ app.post("/payment", function (req, res) {
                             throw err
                         } 
                         else{
-                            res.json({
-                                success:"yes"
-                            })
+                            res.redirect("purchase-history")
                         }
 
                     })
