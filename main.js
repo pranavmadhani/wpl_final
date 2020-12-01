@@ -376,7 +376,7 @@ app.post('/upload-quiz-json', (req, res) => {
         quiz_data: JSON.parse(req.body.quiz),
     }, function (err, video) {
         if (err) throw err;
-        res.send('success');
+        res.redirect('http://localhost:8081/sample');
         // res.redirect("/videos");
     });
 });

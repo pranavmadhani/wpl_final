@@ -1,110 +1,130 @@
 <!DOCTYPE html>
 <html>
-    <%- include('partials/header') -%>
-    <main class="page shopping-cart-page">
-        <section class="clean-block clean-cart dark">
-            <div class="container">
-                <div class="block-heading">
-                    <form action="/controllers/dbFetch" method="post">
-                        <h2 class="text-info">Shopping Cart</h2>
-                        <p>Cart value will be displayed here.</p>
-                </div>
-                <div class="content">
-                    <div class="row no-gutters">
-                        <div class="col-md-12 col-lg-8">
-                            <div class="items">
-                                <% for (var i = 0; i < loop.length; i++){ %>
-                                <div class="product">
-                                    <div class="row justify-content-center align-items-center">
-                                        <div class="col-md-3">
-                                            <div class="product-image"><img class="img-fluid d-block mx-auto image"
-                                                    src="/public/assets/img/quiz.jpg"></div>
-                                        </div>
-                                        <div class="col-md-5 product-info"><a class="product-name" href="#" name="plan">
-                                                <%= selectedPlan[i] %></a>
-                                            <div class="product-specs">
-                                                <div><span>Description:&nbsp;</span><span
-                                                        class="value"><%=description[i] %></span></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-2 quantity"><label class="d-none d-md-block"
-                                                for="quantity">Quantity</label><input type="number" id=number<%=i%>
-                                                class="form-control quantity-input" name="qty" value=<%= qty[i] %>>
-                                        </div>
-                                        <div class="col-6 col-md-2 price"><span id=price<%= [i] %>>$<%=price[i]%></span>
+<%- include('partials/header') -%>
+<main class="page shopping-cart-page">
+    <section class="clean-block clean-cart dark">
+        <div class="container">
+            <div class="block-heading">
+                <form action="/controllers/dbFetch" method="post">
+                    <h2 class="text-info">Shopping Cart</h2>
+                    <p>Cart value will be displayed here.</p>
+            </div>
+            <div class="content">
+                <div class="row no-gutters">
+                    <div class="col-md-12 col-lg-8">
+                        <div class="items">
+                            <% for (var i = 0; i < loop.length; i++){ %>
+                            <div class="product">
+                                <div class="row justify-content-center align-items-center">
+                                    <div class="col-md-3">
+                                        <div class="product-image"><img class="img-fluid d-block mx-auto image"
+                                                src="/public/assets/img/quiz.jpg"></div>
+                                    </div>
+                                    <div class="col-md-5 product-info"><a class="product-name" href="#" name="plan">
+                                            <%= selectedPlan[i] %></a>
+                                        <div class="product-specs">
+                                            <div><span>Description:&nbsp;</span><span
+                                                    class="value"><%=description[i] %></span></div>
                                         </div>
                                     </div>
-                                   
+                                    <div class="col-6 col-md-2 quantity"><label class="d-none d-md-block"
+                                            for="quantity">Quantity</label><input type="number" id=number<%=i%>
+                                            class="form-control quantity-input inp_change" name="qty"
+                                            value=<%= qty[i] %>>
+                                    </div>
+                                    <div class="col-6 col-md-2 price"><span id=price<%= [i] %>>$<%=price[i]%></span>
+                                    </div>
                                 </div>
-                                <% }; %>
                             </div>
+                            <% }; %>
                         </div>
-                        <script>
-                            //set value of shopping cart using js
-                            let ans = 0;
-                            $(document).ready(function () {
-                               // document load codec
-                               for (let i = 0; i < '<%-loop.length %>'; i++) {
-                                let price = document.getElementById('price' + i).innerText  
+                    </div>
+                    <script>
+                        //set value of shopping cart using js
+                        let ans = 0;
+                        $(document).ready(function () {
+                           let status = false;
+                           //on load checking for -value
+                            //disable checkout button if value is < 0
+                            let inputQty = document.getElementsByClassName(
+                                'form-control quantity-input');
+                            for (let x = 0; x < inputQty.length; x++) {
+                                if (inputQty[x].value <= 0) {
+                                    $("#checkout").prop("disabled", true);
+                                }
+                            }
+                           
+                           
+                           
+                            // document load codec
+                            $(".inp_change").change(function () {
+                                
+                                //disable checkout button if value is < 0
+                                let inputQty = document.getElementsByClassName(
+                                    'form-control quantity-input');
+                                for (let x = 0; x < inputQty.length; x++) {
+                                    if (inputQty[x].value <= 0) {
+                                        console.log("if")
+                                        $("#checkout").prop("disabled", true);
+                                        break;
+                                    }
+                                    else{
+                                        console.log("else")
+                                        status= true;
+                                        $("#checkout").prop("disabled", false);
+                                    }
+                                }
+                            });
+                            for (let i = 0; i < '<%-loop.length %>'; i++) {
+                                let price = document.getElementById('price' + i).innerText
                                 price = price.replace("$", "");
                                 result = price * +(document.getElementById("number" + i).value);
                                 ans += result;
                                 document.getElementById('subtotal').innerText = ans;
                                 document.getElementById('total').innerText = ans;
-                                localStorage.setItem("cartPrice",ans);
+                                localStorage.setItem("cartPrice", ans);
                                 console.log(localStorage.getItem("cartPrice"))
-                             // item change code
-                                    $("#number" + i).on('change', function () {
+                                // item change code
+                                $("#number" + i).on('change', function () {
+                                    let price = document.getElementById('price' + i).innerText
+                                    price = price.replace("$", "");
+                                    let ans = 0;
+                                    for (let i = 0; i < '<%-loop.length %>'; i++) {
                                         let price = document.getElementById('price' + i).innerText
                                         price = price.replace("$", "");
-                                        let  ans = 0;
-                                        for (let i = 0; i < '<%-loop.length %>'; i++) {
-                                            let price = document.getElementById('price' + i).innerText  
-                                            price = price.replace("$", "");
-                                            result = price * +(document.getElementById("number" + i).value);
-                                            ans += result;
-                                        }
-                                        document.getElementById('subtotal').innerText = ans;
-                                        document.getElementById('total').innerText = ans;
-                                        localStorage.setItem("cartPrice",ans);
-                                    })
-                                }
-                                ans = 0;
-                            })
-                        </script>
-                        <div class="col-md-12 col-lg-4">
-                            <div class="summary">
-                                <h3>Summary</h3>
-                                <h4><span class="text">Subtotal</span><span class="price" id="subtotal">$0</span></h4>
-                                <h4><span class="text">Discount</span><span class="price">$0</span></h4>
-                                <h4><span class="text">Shipping</span><span class="price">$0</span></h4>
-                                <h4><span class="text">Total</span><span class="price" id="total"></span></h4><button
-                                    class="btn btn-primary btn-block btn-lg" type="submit"
-                                    id="checkout">Checkout</button>
-                                </form>
-                                <form action="/purchase-history" method="get">
-                                    <button
-                                    class="btn btn-primary btn-block btn-lg" type="submit"
-                                    id="history">Purchase History</button>
-                                </form>
-                            </div>
+                                        result = price * +(document.getElementById("number" + i).value);
+                                        ans += result;
+                                    }
+                                    document.getElementById('subtotal').innerText = ans;
+                                    document.getElementById('total').innerText = ans;
+                                    localStorage.setItem("cartPrice", ans);
+                                })
+                            }
+                            ans = 0;
+                        })
+                    </script>
+                    <div class="col-md-12 col-lg-4">
+                        <div class="summary">
+                            <h3>Summary</h3>
+                            <h4><span class="text">Subtotal</span><span class="price" id="subtotal">$0</span></h4>
+                            <h4><span class="text">Discount</span><span class="price">$0</span></h4>
+                            <h4><span class="text">Shipping</span><span class="price">$0</span></h4>
+                            <h4><span class="text">Total</span><span class="price" id="total"></span></h4><button
+                                class="btn btn-primary btn-block btn-lg" type="submit" id="checkout">Checkout</button>
+                            </form>
+                            <form action="/purchase-history" method="get">
+                                <button class="btn btn-primary btn-block btn-lg" type="submit" id="history">Purchase
+                                    History</button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
-    <%- include('partials/footer') -%>
-    <!-- <script>
-        $(function () {
-            console.log("ready!");
-            let length = '<%-loop%>'
-            console.log(length)
-            for (let i = 0; i < length - 1; i++) {
-                $(".product >div:first-child").clone(true).insertBefore(".product > div:last-child");
-            }
-            return false;
-        });
-    </script> -->
+        </div>
+    </section>
+</main>
+<%- include('partials/footer') -%>
+<style>
+</style>
 </body>
 </html>

@@ -1,26 +1,23 @@
 <%- include ('partials/header') %>
-
 <h1>
-
     Select Quiz
 </h1>
-
 <style>
     h1 {
         padding-top: 8%;
     }
+
+    .sm-col-3{
+        margin-left: 8%;
+    
+
+    }
 </style>
-
 <script>
-
-  
-
 </script>
-
 <form action="" class="form-group" method="get">
     <input name="search" type="text" placeholder="Enter Title.." />
     <label for="quiz">Choose a genre:</label>
-
     <select name="genre" class="form-group" id="quiz" onchange="">
         <option value="all">All</option>
         <option value="GK">GK</option>
@@ -28,32 +25,27 @@
         <option value="Science">Science</option>
         <option value="Sports">Sports</option>
     </select>
-<button type="submit" class="btn btn-dark">Search</button>
+    <button type="submit" class="btn btn-dark">Search</button>
 </form>
 </div>
 </div>
-
-
 <div class="container">
     <div class="row">
         <% quiz.forEach(function(quiz_data){ %>
-            <form action='/quiz'>
-        <div class="sm-col-3">
-            <img src="public/assets/img/<%= quiz_data.image %>" style="width: 200px; height: 200px;" class="img-thumbnail" />
-            <div class="caption">
-                <a class='show_hide' href="quizes/<%= quiz_data._id  %>"><%= quiz_data.title %></a>
-               
-                <div>
-                  
-                    <button type="submit" class="btn btn-dark">Take Quiz</button>
-                    <input type="hidden"  name="user_selected_quiz" value ="<%= quiz_data._id  %>">
-                    
+        <form action='/quiz'>
+            <div class="sm-col-3">
+                <img src="public/assets/img/<%= quiz_data.image %>" style="width: 200px; height: 200px;"
+                    class="img-thumbnail" />
+                <div class="caption">
+                    <a class='show_hide' href="quizes/<%= quiz_data._id  %>"><%= quiz_data.title %></a>
+                    <div>
+                        <button type="submit" class="btn btn-dark">Take Quiz</button>
+                        <input type="hidden" name="user_selected_quiz" value="<%= quiz_data._id  %>">
+                    </div>
                 </div>
-                
             </div>
-        </div>
-</form>
+        </form>
         <% }); %>
-    </form>
+        </form>
     </div>
 </div>
