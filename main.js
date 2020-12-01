@@ -126,8 +126,6 @@ app.get('/login', checkLoginStatus, function (req, res) {
     });
 })
 app.get('/quiz', checkUserStatus, function (req, res) {
-    
-   
     var collection = db.get("quizes");
     console.log(req.query.user_selected_quiz)
     collection.findOne({
@@ -135,15 +133,12 @@ app.get('/quiz', checkUserStatus, function (req, res) {
     }, "quiz_data").then((doc) => {
         let jsonData = JSON.stringify(doc.quiz_data);
         jsonData = JSON.parse(jsonData);
-        
         res.render(__dirname + "/views/" + "quiz", {
             username: RESPONSE_OUTPUT,
             login: STATUS,
             quiz_data: jsonData
         });
-    
     })
-
     //})
 })
 app.get('/quiz_home', checkUserStatus, function (req, res) {
@@ -210,15 +205,11 @@ app.get('/quiz_home', checkUserStatus, function (req, res) {
     }
 });
 app.get('/quizes/:id', function (req, res) {
-
     var userStatus = req.session.userType;
     console.log(userStatus);
-        if(userStatus !='admin')
-        {
-            res.status(401).send('You are not authorized to access this page');
-        }
-
-
+    if (userStatus != 'admin') {
+        res.status(401).send('You are not authorized to access this page');
+    }
     var collection = db.get('quizes');
     collection.findOne({
         _id: req.params.id
@@ -269,7 +260,6 @@ app.get('/Pricing', addProduct.retrieveProduct, function (req, res) {
     });
 })
 app.get('/profile', checkUserStatus, function (req, res) {
-  
     res.render(__dirname + "/views/" + "profile", {
         username: RESPONSE_OUTPUT,
         email: req.session.user,
@@ -312,8 +302,36 @@ app.get('/shopping-cart', checkUserStatus, dbFetcher.DBHelper, function (req, re
         loop: req.session.count
     });
 });
+
+
+app.get('/purchase-history',checkUserStatus,function(req,res){
+
+
+connection.query('select * from history where user = ?',req.session.user,function(err,data){
+
+    if(err)throw err;
+    else{
+       
+        res.render(__dirname + "/views/" + "purchase-history",{
+
+            username: RESPONSE_OUTPUT,
+            login: STATUS,
+            result:data
+        })
+    }
+})
+
+    
+
+});
+
+
+
 app.get('/sample', checkLoginStatus, function (req, res) {
-    res.render(__dirname + "/views/" + "sample")
+    res.render(__dirname + "/views/" + "sample", {
+        username: RESPONSE_OUTPUT,
+        login: STATUS,
+    })
 })
 app.get('/cart-sample', checkLoginStatus, function (req, res) {
     res.render(__dirname + "/views/" + "cart-sample")
@@ -348,7 +366,6 @@ app.post('/upload-quiz-json', (req, res) => {
 /****Route for delete */
 app.delete("/quizes/:id", function (req, res) {
     var collection = db.get("quizes");
-    
     collection.remove({
         _id: req.params.id
     }, function (err, quiz_data) {
@@ -362,7 +379,6 @@ app.delete("/quizes/:id", function (req, res) {
 /***Route for edit */
 app.get("/quizes/:id/edit", function (req, res) {
     var collection = db.get("quizes");
-   
     collection.findOne({
         _id: req.params.id
     }, function (err, data) {
@@ -396,13 +412,44 @@ app.post("/quizes/:id/edit_save", function (req, res) {
             res.redirect("http://localhost:8081/sample");
         });
 });
-//set app directory to make sure static files are being read
-app.use(express.static(__dirname + '/public/assets'), function (req, res, next) {
-    next();
-});
-app.use(express.static(__dirname), function (req, res, next) {
-    next();
-});
-app.listen(8081, function () {
-    console.log("working on port 8081")
-});
+app.post("/payment", function (req, res) {
+            let purchaseData = {
+                user: req.session.user,
+                date: Date.parse(new Date()),
+                total: req.body.finalAmt
+            }
+           
+            connection.query('INSERT into history set ?', purchaseData, function (err, results, data) {
+                if (err) {
+                    throw err
+                } else {
+
+                    connection.query('DELETE from cart where email =?',purchaseData.user, function(err,results){
+
+                        if (err) {
+                            throw err
+                        } 
+                        else{
+                            res.json({
+                                success:"yes"
+                            })
+                        }
+
+                    })
+                    
+                }
+            })
+        });
+
+
+     
+            //set app directory to make sure static files are being read
+            app.use(express.static(__dirname + '/public/assets'), function (req, res, next) {
+                next();
+            });
+            app.use(express.static(__dirname), function (req, res, next) {
+                next();
+            });
+            app.listen(8081, function () {
+                console.log("working on port 8081")
+            });

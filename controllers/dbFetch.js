@@ -39,15 +39,28 @@ module.exports.DBHelper = function dbFetcher(req, res, next) {
 
 
 module.exports.postUpdatedCartValueOnCkecout = function dbFetcher(req, res, next) {
+   
+   
+    if(Object.keys(req.body).length === 0)  
+    {
+        console.log("inside if");
+    
+        res.status(400).send({ message: 'Cart is empty please add items to cart' }); 
+    }
+    else{
     var updatedProductCount = req.body
     var email = req.session.user
     var plan = req.session.selectedPlan
     var qty =req.body.qty;
     
-    
+    console.log(req.body)
 
 //get value of email and plans and qty respectively and store it in variable
 var values = [];
+
+
+console.log("inside else");
+
 for(let i =0;i <qty.length; i++)
 {
 values.push({count:qty[i],email:email,plan:plan[i]})
@@ -68,5 +81,5 @@ values.push({count:qty[i],email:email,plan:plan[i]})
 console.log("success.. cart value set")
 res.redirect("http://localhost:8081/payment-page");
 
-
+}
 }

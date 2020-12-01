@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<%- include('partials/header') -%>
+<main class="page shopping-cart-page">
+    <section class="clean-block clean-cart dark">
+        <div class="container">
+            <div class="block-heading">
+                <form action="/" method="get">
+                    <h2 class="text-info">Purchase History</h2>
+                    <p>Recent purchases will be shown here</p>
+            </div>
+            <div class="content">
+                <div class="row no-gutters">
+                    <div class="col-md-12 col-lg-8">
+                        <div class="items">
+                            <% for (var i = 0; i < result.length; i++){ %>
+                            <div class="product">
+                                <div class="row justify-content-center align-items-center">
+                                    <div class="col-md-3">
+                                        <div class="product-image"><img class="img-fluid d-block mx-auto image"
+                                                src="/public/assets/img/item.svg" alt="item"></div>
+                                    </div>
+                                    <div class="col-md-5 product-info"><a class="product-name" href="#" name="plan">
+                                            <%= result[i].user %></a>
+                                        <div class="product-specs">
+                                            <div><span>Token:&nbsp;</span><span
+                                                    class="value"><%=result[i].date %></span></div>
+                                        </div>
+                                        <div><span>Price:&nbsp;</span><span class="value"><%=result[i].total %></span>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                            <% }; %>
+                        </div>
+                    </div>
+
+
+                 
+
+                    <div class="col-md-12 col-lg-4">
+                        <div class="summary">
+                            <h3>Summary</h3>
+                            <h4><span class="text">Item List</span><span class="price"
+                                    id="subtotal"><%=result.length%></span></h4>
+                           
+                            <button
+                                class="btn btn-primary btn-block btn-lg" type="submit" id="checkout">Return
+                                Home</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<%- include('partials/footer') -%>
+
+</body>
+
+</html>

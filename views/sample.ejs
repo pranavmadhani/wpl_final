@@ -1,16 +1,22 @@
+<!DOCTYPE html>
 <html>
-<head> </head>
-<body> 
-<h1> success  </h1>
 
-<script>
-    setTimeout(function(){
-       window.location.href = 'http://localhost:8081/';
-    }, 1000);
- </script>
- <p>Web page redirects after 2 seconds.</p>
-
+    <%- include('partials/header') -%>
+    <main class="page registration-page">
+        <section class="clean-block clean-form dark">
+            <div class="container">
+                <div class="block-heading">
+                    <h2 class="text-info">Success</h2>
+                </div>
+                <script>
+                    setTimeout(function(){
+                       window.location.href = 'http://localhost:8081/';
+                    }, 1000);
+                 </script>
+            </div>
+        </section>
+    </main>
+    <%- include('partials/footer') -%>
 </body>
-
 
 </html>

@@ -4,7 +4,14 @@
 
 <%- include('partials/header') -%>
 
+<style>
+.update_btn{
 
+    margin-top:10px;
+    margin-bottom:10px;
+}
+    
+</style>
 
 
 
@@ -16,8 +23,8 @@
                         <div class="col-lg-4 col-xl-12">
                             <div class="card mb-3">
                                 <div class="card-body text-center shadow"><img class="rounded-circle mb-3 mt-4"
-                                        src="assets/img/dogs/image2.jpeg" width="160" height="160" id="set-pic">
-                                    <div class="mb-3"><input type="file" class="btn btn-primary btn-sm" id="pic"></div>
+                                        src="assets/img/dogs/image2.jpeg" width="160" height="160" id="set-pic" alt="dog-pic">
+                                   
                                 </div>
                             </div>
                             <div class="card shadow mb-4"></div>
@@ -73,7 +80,7 @@
                                                 <form method="post" action="controllers/product-controller"
                                                
                                                 name="add_update_product" class="show_hide">
-                                                <p class="text-primary m-0 font-weight-bold">Add/Update Product</p>
+                                                <p class="text-primary m-0 font-weight-bold">Add Product</p>
                                                     <div class="form-row">
                                                         <div class="col">
                                                             <div class="form-group"><label
@@ -116,11 +123,11 @@
                                                         </div>
                                                     </div>
                                                 </form>
-
+                                               
+                                                
                                                 <form method="post" action="controllers/product-delete-controller" class=show_hide>
                                                 <div class="col">
-                                                    <!-- <div class="card shadow mb-3">
-                                                        <div class="card-header py-3"> -->
+                                                   
                                                             <p class="text-primary m-0 font-weight-bold">Remove Product
                                                             </p>
                                                         </div>
@@ -165,26 +172,7 @@
             </div>
         </form>
 
-            <!-- <form method="POST" action="/upload-quiz-json" enctype="multipart/form-data">
-                <div>
-                    <label>Select your profile picture:</label>
-                    <input type="file" name="quiz_json" />
-                    <div>
-                        <label for="categoroy">Category</label>
-                        <select name="category" id="category" required>
-                            <option value="GK">GK</option>
-                            <option value="Movies">Movies</option>
-                            <option value="Science">Science</option>
-                            <option value="Sports">Sports</option>
-                            <option value="All">All</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <input type="submit" name="submit" value="Upload" multiple />
-                </div>
-            </form> -->
-
+           
 
 
           
@@ -201,24 +189,7 @@
                   }
                     
 
-                    $("#pic").change(function (e) {
-
-                        for (var i = 0; i < e.originalEvent.srcElement.files.length; i++) {
-
-                            var file = e.originalEvent.srcElement.files[i];
-
-                            var img = document.createElement("img");
-                            max_size = 160,
-                                width = 160,
-                                height = 160;
-                            var reader = new FileReader();
-                            reader.onloadend = function () {
-                                img.src = reader.result;
-                            }
-                            reader.readAsDataURL(file);
-                            $("#set-pic").after(img);
-                        }
-                    });
+                   
                 });
             </script>
 

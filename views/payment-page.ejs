@@ -9,7 +9,7 @@
                     <h2 class="text-info">Payment</h2>
                     <p>Make payment here.</p>
                 </div>
-                <form>
+                <form method="post" action="payment">
                     <div class="products">
                        
                         <h3 class="title">Checkout</h3>
@@ -21,11 +21,17 @@
                         <% }; %>
 
                         <div class="total"><span>Total</span><span class="price" id ="finalPrice">$320</span></div>
+                        <input type="hidden" name="finalAmt" id ="finalAmt" value = ""/>
                         <script>
 
                             document.getElementById("finalPrice").innerHTML = "$"+localStorage.getItem("cartPrice");
+                            document.getElementById("finalAmt").innerHTML = "$"+localStorage.getItem("cartPrice");
+                            document.getElementById("finalAmt").value = "$"+localStorage.getItem("cartPrice");
                         </script>
                     </div>
+                   
+                    
+                    
                     <div class="card-details">
                         <h3 class="title">Credit Card Details</h3>
                         <div class="form-row">
